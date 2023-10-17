@@ -64,12 +64,14 @@ class Start(QMainWindow):
 
         def style(a):
             if a == 0:
-                pixmap = QPixmap('image.jpg')
-            if a == 1:
-                pixmap = QPixmap('image.jpg')
-            if a == 2:
-                pixmap = QPixmap('image.jpg')
+                pixmap = QPixmap('1.jpg')
+            elif a == 1:
+                pixmap = QPixmap('2.jpg')
+            elif a == 2:
+                pixmap = QPixmap('3.jpg')
+            self.labelimage.setScaledContents(True)
             self.labelimage.setPixmap(pixmap)
+            
         city(NameofSity = "Belgorod")
 
 def application():
