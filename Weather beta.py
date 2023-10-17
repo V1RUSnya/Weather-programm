@@ -14,11 +14,11 @@ class Start(QMainWindow):
         self.setFixedSize(QSize(350, 200))
         
         self.label = QLabel()
-        self.label1 = QLabel()
+        self.labelimage = QLabel()
         
         layout = QVBoxLayout()
+        layout.addWidget(self.labelimage)
         layout.addWidget(self.label)
-        layout.addWidget(self.label1)
         
         self.container = QWidget()
         self.container.setLayout(layout)
@@ -62,9 +62,14 @@ class Start(QMainWindow):
                 print('City search error!')
                 #window.geometry('300x70')       
 
-        def style(a,b):
+        def style(a):
             if a == 0:
-                
+                pixmap = QPixmap('image.jpg')
+            if a == 1:
+                pixmap = QPixmap('image.jpg')
+            if a == 2:
+                pixmap = QPixmap('image.jpg')
+            self.labelimage.setPixmap(pixmap)
         city(NameofSity = "Belgorod")
 
 def application():
