@@ -1,9 +1,10 @@
 # This Python file uses the following encoding: utf-8
 import requests
-from PyQt6 import QtCore
+import http.client
+from twoip import TwoIP
 from PyQt6.QtGui import QPixmap
-from PyQt6.QtCore import QFileInfo, QSize
-from PyQt6.QtWidgets import QFileDialog, QWidget, QVBoxLayout, QLabel, QPushButton, QMainWindow, QApplication, QMessageBox
+from PyQt6.QtCore import QSize
+from PyQt6.QtWidgets import QWidget, QVBoxLayout, QLabel, QMainWindow, QApplication
 
 class Start(QMainWindow):
     def __init__(self) -> None:
@@ -24,10 +25,10 @@ class Start(QMainWindow):
         self.container.setLayout(layout)
         self.setCentralWidget(self.container)
         
-        def city(NameofSity):
+        def city(s_city):
+            style(1)
             try:
                 print('City search...')
-                s_city = NameofSity
                 res = requests.get("http://api.openweathermap.org/data/2.5/find",
                                    params={'q': s_city, 'type': 'like', 'units': 'metric', 'APPID': self.appid})
                 data = res.json()
@@ -44,12 +45,6 @@ class Start(QMainWindow):
                     print('Successful!')
                     print("Temperature:", data['main']['temp'])
                     print(data['weather'][0]['description'])
-                    #print(len(data['weather'][0]['description'])) #Отображает длину строк
-                    dlina = len(data['weather'][0]['description'])
-                    #if dlina<15:
-                        #window.geometry('300x70')
-                    #else:
-                        #window.geometry('375x70')
                     tempp = data['main']['temp'],'\u2103'
                     #lblb.configure(text=(data['weather'][0]['description']))
                     #lala.configure(text=(data['name']))
@@ -59,20 +54,30 @@ class Start(QMainWindow):
                     print('Weather request error!')
             except:
                 #lbla.configure(text='Ошибка поиска города!')
-                print('City search error!')
-                #window.geometry('300x70')       
+                print('City search error!')      
 
         def style(a):
             if a == 0:
-                pixmap = QPixmap('1.jpg')
+                image = "1.png"
             elif a == 1:
-                pixmap = QPixmap('2.jpg')
+                image = "2.png"
             elif a == 2:
-                pixmap = QPixmap('3.jpg')
-            self.labelimage.setScaledContents(True)
+                image = "3.png"
+            pixmap = QPixmap(image)
+            self.labelimage.setStyleSheet('background-image: url("1.png");')
             self.labelimage.setPixmap(pixmap)
+            self.labelimage.setScaledContents(True)
             
-        city(NameofSity = "Belgorod")
+        def sityfrom():
+            conn = http.client.HTTPConnection("ifconfig.me")
+            conn.request("GET", "/ip")
+            response = conn.getresponse()
+            ips = response.read().decode('utf-8')
+            twoip = TwoIP(key = None)
+            self.geo = twoip.geo(ip = ips)
+            
+        self.geo = "Moscow"
+        city(self.geo)
 
 def application():
     app = QApplication([])
