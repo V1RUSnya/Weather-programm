@@ -59,13 +59,13 @@ class Start(QMainWindow):
 
         def style(a):
             if a == 0:
-                image = "1.png"
+                image = "1.jpg"
             elif a == 1:
                 image = "2.png"
             elif a == 2:
                 image = "3.png"
             pixmap = QPixmap(image)
-            self.labelimage.setStyleSheet('background-image: url("1.png");')
+            self.labelimage.setStyleSheet('background-image: url("1.jpg");')
             self.labelimage.setPixmap(pixmap)
             self.labelimage.setScaledContents(True)
             
@@ -78,8 +78,8 @@ class Start(QMainWindow):
                 twoip = TwoIP(key = None)
                 self.geo = twoip.geo(ip = ips)
                 city(self.geo['city'])
-            except:
-                print("Cant acess to API, load default city")
+            except Exception as e:
+                print(f"Cant acess to API, load default city! Error: {e}")
                 city("Belgorod")
                                 
         StartSearch()
