@@ -10,6 +10,7 @@ class Start(QMainWindow):
     def __init__(self) -> None:
         super().__init__()
         self.appid = "5efbceafa8b3b152582211eb98168e3b"
+        self.geo = "Moscow"
         
         self.setWindowTitle("Weather")
         self.setFixedSize(QSize(350, 200))
@@ -68,7 +69,7 @@ class Start(QMainWindow):
             self.labelimage.setPixmap(pixmap)
             self.labelimage.setScaledContents(True)
             
-        def sityfrom():
+        def cityfrom():
             conn = http.client.HTTPConnection("ifconfig.me")
             conn.request("GET", "/ip")
             response = conn.getresponse()
@@ -76,8 +77,8 @@ class Start(QMainWindow):
             twoip = TwoIP(key = None)
             self.geo = twoip.geo(ip = ips)
             
-        self.geo = "Moscow"
-        city(self.geo)
+        cityfrom()
+        city(self.geo['city'])
 
 def application():
     app = QApplication([])
