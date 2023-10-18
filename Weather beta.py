@@ -1,4 +1,4 @@
-# This Python file uses the following encoding: utf-8
+# -*- coding: utf-8 -*-
 import requests
 import http.client
 from twoip import TwoIP
@@ -10,7 +10,7 @@ class Start(QMainWindow):
     def __init__(self) -> None:
         super().__init__()
         self.appid = "5efbceafa8b3b152582211eb98168e3b"
-        self.geo = "Moscow"
+        self.geo = 0
         
         self.setWindowTitle("Weather")
         self.setFixedSize(QSize(350, 200))
@@ -69,16 +69,20 @@ class Start(QMainWindow):
             self.labelimage.setPixmap(pixmap)
             self.labelimage.setScaledContents(True)
             
-        def cityfrom():
-            conn = http.client.HTTPConnection("ifconfig.me")
-            conn.request("GET", "/ip")
-            response = conn.getresponse()
-            ips = response.read().decode('utf-8')
-            twoip = TwoIP(key = None)
-            self.geo = twoip.geo(ip = ips)
-            
-        cityfrom()
-        city(self.geo['city'])
+        def StartSearch():
+            try:
+                conn = http.client.HTTPConnection("ifconfig.me")
+                conn.request("GET", "/ip")
+                response = conn.getresponse()
+                ips = response.read().decode('utf-8')
+                twoip = TwoIP(key = None)
+                self.geo = twoip.geo(ip = ips)
+                city(self.geo['city'])
+            except:
+                print("Cant acess to API, load default city")
+                city("Belgorod")
+                                
+        StartSearch()
 
 def application():
     app = QApplication([])
