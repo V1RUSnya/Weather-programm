@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+import sys
 import requests
 import http.client
 from twoip import TwoIP
@@ -42,6 +43,7 @@ class Ui_MainWindow(object):
         self.LabelOption.setFont(font)
         self.LabelOption.setObjectName("LabelOption")
         MainWindow.setCentralWidget(self.centralwidget)
+        
 
         self.retranslateUi(MainWindow)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
@@ -76,7 +78,6 @@ class Ui_MainWindow(object):
                 data = res.json()
                 cities = ["{} ({})".format(d['name'], d['sys']['country'])
                           for d in data['list']]
-                print('Successful!')
                 print("City: ", cities)
                 city_id = data['list'][0]['id']
                 try:
@@ -84,7 +85,6 @@ class Ui_MainWindow(object):
                     res = requests.get("http://api.openweathermap.org/data/2.5/weather",
                     params={'id': city_id, 'units': 'metric', 'lang': 'ru', 'APPID': self.appid})
                     data = res.json()
-                    print('Successful!')
                     print("Temperature:", data['main']['temp'])
                     print(data['weather'][0]['description'])
                     tempp = str(data['main']['temp'])
@@ -104,5 +104,6 @@ if __name__ == "__main__":
     ui = Ui_MainWindow()
     ui.setupUi(MainWindow)
     ui.StartSearch()
+    MainWindow.setGeometry(1920 - 267, 1080 - 135, 267, 99)
     MainWindow.show()
     sys.exit(app.exec())
