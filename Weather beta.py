@@ -2,33 +2,74 @@
 import requests
 import http.client
 from twoip import TwoIP
-from PyQt6.QtGui import QPixmap
-from PyQt6.QtCore import QSize
-from PyQt6.QtWidgets import QWidget, QVBoxLayout, QLabel, QMainWindow, QApplication
+from PyQt6 import QtCore, QtGui, QtWidgets
 
-class Start(QMainWindow):
-    def __init__(self) -> None:
-        super().__init__()
+class Ui_MainWindow(object):
+    def setupUi(self, MainWindow):
         self.appid = "5efbceafa8b3b152582211eb98168e3b"
         self.geo = 0
+        MainWindow.setObjectName("MainWindow")
+        MainWindow.resize(267, 99)
+        self.centralwidget = QtWidgets.QWidget(parent=MainWindow)
+        self.centralwidget.setObjectName("centralwidget")
+        self.MainTemp = QtWidgets.QLabel(parent=self.centralwidget)
+        self.MainTemp.setGeometry(QtCore.QRect(0, 0, 181, 51))
         
-        self.setWindowTitle("Weather")
-        self.setFixedSize(QSize(350, 200))
+        font = QtGui.QFont()
+        font.setFamily("Stencil")
+        font.setPointSize(48)
+        font.setBold(False)
+        font.setWeight(50)
         
-        self.label = QLabel()
-        self.labelimage = QLabel()
+        self.MainTemp.setFont(font)
+        self.MainTemp.setObjectName("MainTemp")
+        self.CityLabel = QtWidgets.QLabel(parent=self.centralwidget)
+        self.CityLabel.setGeometry(QtCore.QRect(0, 50, 181, 21))
         
-        layout = QVBoxLayout()
-        layout.addWidget(self.labelimage)
-        layout.addWidget(self.label)
+        font = QtGui.QFont()
+        font.setFamily("Stencil")
+        font.setPointSize(10)
         
-        self.container = QWidget()
-        self.container.setLayout(layout)
-        self.setCentralWidget(self.container)
+        self.CityLabel.setFont(font)
+        self.CityLabel.setLayoutDirection(QtCore.Qt.LayoutDirection.LeftToRight)
+        self.CityLabel.setWordWrap(False)
+        self.CityLabel.setObjectName("CityLabel")
+        self.LabelOption = QtWidgets.QLabel(parent=self.centralwidget)
+        self.LabelOption.setGeometry(QtCore.QRect(0, 70, 181, 20))
+        font = QtGui.QFont()
+        font.setFamily("Stencil")
+        font.setPointSize(12)
+        self.LabelOption.setFont(font)
+        self.LabelOption.setObjectName("LabelOption")
+        MainWindow.setCentralWidget(self.centralwidget)
+
+        self.retranslateUi(MainWindow)
+        QtCore.QMetaObject.connectSlotsByName(MainWindow)
+
+    def retranslateUi(self, MainWindow):
+        _translate = QtCore.QCoreApplication.translate
+        MainWindow.setWindowTitle(_translate("MainWindow", "Weather"))
+        self.MainTemp.setText(_translate("MainWindow", "00 C"))
+        self.CityLabel.setText(_translate("MainWindow", "404"))
+        self.LabelOption.setText(_translate("MainWindow", "404"))
         
-        def city(s_city):
-            style(1)
-            try:
+    def StartSearch(self):
+         try:
+              conn = http.client.HTTPConnection("ifconfig.me")
+              conn.request("GET", "/ip")
+              response = conn.getresponse()
+              ips = response.read().decode('utf-8')
+              twoip = TwoIP(key = None)
+              self.geo = twoip.geo(ip = ips)
+              self.CityLabel.setText(str(self.geo['city']))
+              self.city(self.geo['city'])
+         except Exception as e:
+              print(f"Cant acess to API, load default city! Error: {e}")
+              self.CityLabel.setText("Belgorod")
+              self.city("Belgorod")
+        
+    def city(self, s_city):
+        try:
                 print('City search...')
                 res = requests.get("http://api.openweathermap.org/data/2.5/find",
                                    params={'q': s_city, 'type': 'like', 'units': 'metric', 'APPID': self.appid})
@@ -46,48 +87,22 @@ class Start(QMainWindow):
                     print('Successful!')
                     print("Temperature:", data['main']['temp'])
                     print(data['weather'][0]['description'])
-                    tempp = data['main']['temp'],'\u2103'
-                    #lblb.configure(text=(data['weather'][0]['description']))
-                    #lala.configure(text=(data['name']))
-                    #lbla.configure(text=(tempp))
+                    tempp = str(data['main']['temp'])
+                    self.MainTemp.setText(tempp)
+                    self.LabelOption.setText(str(data['weather'][0]['description']))
                 except:
-                    #lbla.configure(text='Ошибка поиска погоды!')
                     print('Weather request error!')
-            except:
-                #lbla.configure(text='Ошибка поиска города!')
-                print('City search error!')      
-
-        def style(a):
-            if a == 0:
-                image = "1.jpg"
-            elif a == 1:
-                image = "2.png"
-            elif a == 2:
-                image = "3.png"
-            pixmap = QPixmap(image)
-            self.labelimage.setStyleSheet('background-image: url("1.jpg");')
-            self.labelimage.setPixmap(pixmap)
-            self.labelimage.setScaledContents(True)
-            
-        def StartSearch():
-            try:
-                conn = http.client.HTTPConnection("ifconfig.me")
-                conn.request("GET", "/ip")
-                response = conn.getresponse()
-                ips = response.read().decode('utf-8')
-                twoip = TwoIP(key = None)
-                self.geo = twoip.geo(ip = ips)
-                city(self.geo['city'])
-            except Exception as e:
-                print(f"Cant acess to API, load default city! Error: {e}")
-                city("Belgorod")
+        except:
+                print('City search error!') 
                                 
-        StartSearch()
 
-def application():
-    app = QApplication([])
-    window = Start()
-    window.show()
-    app.exec()
 
-application()
+if __name__ == "__main__":
+    import sys
+    app = QtWidgets.QApplication(sys.argv)
+    MainWindow = QtWidgets.QMainWindow()
+    ui = Ui_MainWindow()
+    ui.setupUi(MainWindow)
+    ui.StartSearch()
+    MainWindow.show()
+    sys.exit(app.exec())
