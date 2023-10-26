@@ -1,4 +1,4 @@
-# -*- coding: utf-8 -*-
+# -*- coding: cp1251 -*-
 import sys
 import requests
 import http.client
@@ -10,40 +10,54 @@ class Ui_MainWindow(object):
         self.appid = "5efbceafa8b3b152582211eb98168e3b"
         self.geo = 0
         MainWindow.setObjectName("MainWindow")
-        MainWindow.resize(267, 99)
+        MainWindow.resize(210, 100)
         self.centralwidget = QtWidgets.QWidget(parent=MainWindow)
+        self.centralwidget.setStyleSheet("background-color: rgb(0, 0, 0); ")
         self.centralwidget.setObjectName("centralwidget")
-        self.MainTemp = QtWidgets.QLabel(parent=self.centralwidget)
-        self.MainTemp.setGeometry(QtCore.QRect(0, 0, 181, 51))
-        
+        self.formLayoutWidget = QtWidgets.QWidget(parent=self.centralwidget)
+        self.formLayoutWidget.setGeometry(QtCore.QRect(0, 0, 211, 101))
+        self.formLayoutWidget.setObjectName("formLayoutWidget")
+        self.MainLayout = QtWidgets.QFormLayout(self.formLayoutWidget)
+        self.MainLayout.setContentsMargins(0, 0, 0, 0)
+        self.MainLayout.setHorizontalSpacing(10)
+        self.MainLayout.setVerticalSpacing(12)
+        self.MainLayout.setObjectName("MainLayout")
+        self.L1 = QtWidgets.QLabel(parent=self.formLayoutWidget)
         font = QtGui.QFont()
-        font.setFamily("Stencil")
-        font.setPointSize(48)
-        font.setBold(False)
-        font.setWeight(50)
-        
+        font.setPointSize(14)
+        self.L1.setFont(font)
+        self.L1.setObjectName("L1")
+        self.MainLayout.setWidget(0, QtWidgets.QFormLayout.ItemRole.LabelRole, self.L1)
+        self.CityLabel = QtWidgets.QLabel(parent=self.formLayoutWidget)
+        font = QtGui.QFont()
+        font.setPointSize(14)
+        self.CityLabel.setFont(font)
+        self.CityLabel.setObjectName("CityLabel")
+        self.MainLayout.setWidget(0, QtWidgets.QFormLayout.ItemRole.FieldRole, self.CityLabel)
+        self.L2 = QtWidgets.QLabel(parent=self.formLayoutWidget)
+        font = QtGui.QFont()
+        font.setPointSize(14)
+        self.L2.setFont(font)
+        self.L2.setObjectName("L2")
+        self.MainLayout.setWidget(1, QtWidgets.QFormLayout.ItemRole.LabelRole, self.L2)
+        self.MainTemp = QtWidgets.QLabel(parent=self.formLayoutWidget)
+        font = QtGui.QFont()
+        font.setPointSize(14)
         self.MainTemp.setFont(font)
         self.MainTemp.setObjectName("MainTemp")
-        self.CityLabel = QtWidgets.QLabel(parent=self.centralwidget)
-        self.CityLabel.setGeometry(QtCore.QRect(0, 50, 181, 21))
-        
+        self.MainLayout.setWidget(1, QtWidgets.QFormLayout.ItemRole.FieldRole, self.MainTemp)
+        self.LabelOption = QtWidgets.QLabel(parent=self.formLayoutWidget)
         font = QtGui.QFont()
-        font.setFamily("Stencil")
-        font.setPointSize(10)
-        
-        self.CityLabel.setFont(font)
-        self.CityLabel.setLayoutDirection(QtCore.Qt.LayoutDirection.LeftToRight)
-        self.CityLabel.setWordWrap(False)
-        self.CityLabel.setObjectName("CityLabel")
-        self.LabelOption = QtWidgets.QLabel(parent=self.centralwidget)
-        self.LabelOption.setGeometry(QtCore.QRect(0, 70, 181, 20))
-        font = QtGui.QFont()
-        font.setFamily("Stencil")
-        font.setPointSize(12)
+        font.setPointSize(14)
         self.LabelOption.setFont(font)
         self.LabelOption.setObjectName("LabelOption")
+        self.L1.setStyleSheet("color: white;")
+        self.L2.setStyleSheet("color: white;")
+        self.MainTemp.setStyleSheet("color: white;")
+        self.LabelOption.setStyleSheet("color: white;")
+        self.CityLabel.setStyleSheet("color: white;")
+        self.MainLayout.setWidget(2, QtWidgets.QFormLayout.ItemRole.SpanningRole, self.LabelOption)
         MainWindow.setCentralWidget(self.centralwidget)
-        
 
         self.retranslateUi(MainWindow)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
@@ -51,10 +65,11 @@ class Ui_MainWindow(object):
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate
         MainWindow.setWindowTitle(_translate("MainWindow", "Weather"))
-        self.MainTemp.setText(_translate("MainWindow", "00 C"))
-        self.CityLabel.setText(_translate("MainWindow", "404"))
-        self.LabelOption.setText(_translate("MainWindow", "404"))
-        
+        self.L1.setText(_translate("MainWindow", "City:"))
+        self.CityLabel.setText(_translate("MainWindow", "Belgorod"))
+        self.L2.setText(_translate("MainWindow", "Temp: "))
+        self.MainTemp.setText(_translate("MainWindow", "24,6 C"))
+        self.LabelOption.setText(_translate("MainWindow", "Погода"))
     def StartSearch(self):
          try:
               conn = http.client.HTTPConnection("ifconfig.me")
@@ -88,13 +103,12 @@ class Ui_MainWindow(object):
                     print("Temperature:", data['main']['temp'])
                     print(data['weather'][0]['description'])
                     tempp = str(data['main']['temp'])
-                    self.MainTemp.setText(tempp)
+                    self.MainTemp.setText(tempp + " C")
                     self.LabelOption.setText(str(data['weather'][0]['description']))
                 except:
                     print('Weather request error!')
         except:
                 print('City search error!') 
-                                
 
 
 if __name__ == "__main__":
@@ -104,6 +118,6 @@ if __name__ == "__main__":
     ui = Ui_MainWindow()
     ui.setupUi(MainWindow)
     ui.StartSearch()
-    MainWindow.setGeometry(1920 - 267, 1080 - 135, 267, 99)
+    MainWindow.setGeometry(1920 - 210, 1080 - 140, 210, 100)
     MainWindow.show()
     sys.exit(app.exec())
